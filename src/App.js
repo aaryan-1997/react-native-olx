@@ -14,7 +14,7 @@ import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignUpScreen';
 import CreateAdsScreen from './screens/CreateAdsScreen';
 import HomeScreen from './screens/ListItemScreen';
-
+import AccountScreen from './screens/AccountScreen';
 const theme = {
   ...DefaultTheme,
   roundness: 2,
@@ -43,6 +43,8 @@ const TabNavigator = () => {
           iconName = 'home';
         } else if (route.name === 'Create') {
           iconName = 'plus-circle';
+        } else {
+          iconName = 'user'
         }
         return <View style={style.barBar}>
           <Feather name={iconName} size={25} color={color} />
@@ -54,11 +56,12 @@ const TabNavigator = () => {
     })}>
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: "", }} />
       <Tab.Screen name="Create" component={CreateAdsScreen} options={{ title: "" }} />
+      <Tab.Screen name="Account" component={AccountScreen} options={{ title: "" }} />
     </Tab.Navigator>
   );
 }
 const Navigation = () => {
-  const user = "rter";
+  const user = "";
   return (
     <NavigationContainer>
       {user ? <TabNavigator /> : <AuthNavigator />}

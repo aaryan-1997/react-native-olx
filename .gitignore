@@ -1,0 +1,7 @@
+
+*.lock
+android/.gradle/7.5.1/checksums/checksums.lock
+*.lock
+*.bin
+*.properties
+*.xml

@@ -1,10 +1,15 @@
 import { View, Text, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput, Button } from 'react-native-paper'
+import auth from '@react-native-firebase/auth';
 
 const SignupScreen = ({ navigation }) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const userSignup = async () => {
+        const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+        console.log(userCredential.user)
+    }
     return (
         <KeyboardAvoidingView behavior='position'>
             <View>
@@ -17,6 +22,8 @@ const SignupScreen = ({ navigation }) => {
                         label="Email"
                         value={email}
                         mode="outlined"
+                        keyboardType='email-address'
+                        autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                     />
                     <TextInput
@@ -26,7 +33,7 @@ const SignupScreen = ({ navigation }) => {
                         secureTextEntry={true}
                         onChangeText={text => setPassword(text)}
                     />
-                    <Button mode="contained" textColor='white' onPress={() => console.log('Pressed')}>
+                    <Button mode="contained" textColor='white' onPress={() => userSignup()}>
                         Signup
                     </Button>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
