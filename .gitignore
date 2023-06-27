@@ -5,3 +5,5 @@ android/.gradle/7.5.1/checksums/checksums.lock
 *.bin
 *.properties
 *.xml
+*.lock
+*.bin

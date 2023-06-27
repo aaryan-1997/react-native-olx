@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'react-native-gesture-handler';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
@@ -15,6 +15,7 @@ import SignupScreen from './screens/SignUpScreen';
 import CreateAdsScreen from './screens/CreateAdsScreen';
 import HomeScreen from './screens/ListItemScreen';
 import AccountScreen from './screens/AccountScreen';
+import auth from '@react-native-firebase/auth';
 const theme = {
   ...DefaultTheme,
   roundness: 2,
@@ -61,7 +62,16 @@ const TabNavigator = () => {
   );
 }
 const Navigation = () => {
-  const user = "";
+  const [user, setState] = useState("");
+  useEffect(() => {
+    auth().onAuthStateChanged((userExist) => {
+      if (userExist) {
+        setState(userExist.email);
+      } else {
+        setState("");
+      }
+    })
+  }, [])
   return (
     <NavigationContainer>
       {user ? <TabNavigator /> : <AuthNavigator />}

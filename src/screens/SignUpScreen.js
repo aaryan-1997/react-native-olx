@@ -1,4 +1,9 @@
-import { View, Text, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import {
+    View, Text, Image, StyleSheet,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+    Alert, ToastAndroid, Keyboard
+} from 'react-native'
 import React, { useState } from 'react'
 import { TextInput, Button } from 'react-native-paper'
 import auth from '@react-native-firebase/auth';
@@ -6,10 +11,24 @@ import auth from '@react-native-firebase/auth';
 const SignupScreen = ({ navigation }) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+
     const userSignup = async () => {
-        const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-        console.log(userCredential.user)
+        if (!email || !password) {
+            showToast("Please Enter Email and Password!")
+        } else {
+            try {
+                const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+                console.log(userCredential.user)
+            } catch (e) {
+                if (e.code == "auth/email-already-in-use") {
+                    showToast(e.message.replace('[auth/email-already-in-use] ', ''), 4)
+                }
+            }
+        }
     }
+    const showToast = (message, duration = 3) => {
+        ToastAndroid.show(message, duration)
+    };
     return (
         <KeyboardAvoidingView behavior='position'>
             <View>
@@ -33,7 +52,10 @@ const SignupScreen = ({ navigation }) => {
                         secureTextEntry={true}
                         onChangeText={text => setPassword(text)}
                     />
-                    <Button mode="contained" textColor='white' onPress={() => userSignup()}>
+                    <Button mode="contained" textColor='white' onPress={() => {
+                        Keyboard.dismiss();
+                        userSignup();
+                    }}>
                         Signup
                     </Button>
                     <TouchableOpacity onPress={() => navigation.goBack()}>

@@ -1,10 +1,28 @@
-import { View, Text, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import { View, Text, Image, StyleSheet, KeyboardAvoidingView, TouchableOpacity, ToastAndroid, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput, Button, } from 'react-native-paper'
+import auth from '@react-native-firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const userLogin = async () => {
+        if (!email || !password) {
+            showToast("Please enter email and password!")
+        } else {
+            try {
+                const userCredential = await auth().signInWithEmailAndPassword(email, password);
+                console.log(userCredential.user)
+            } catch (e) {
+                if (e.code == "auth/email-already-in-use") {
+                    showToast(e.message.replace('[auth/email-already-in-use] ', ''), 4)
+                }
+            }
+        }
+    }
+    const showToast = (message, duration = 3) => {
+        ToastAndroid.show(message, duration)
+    };
     return (
         <KeyboardAvoidingView behavior='position'>
             <View>
@@ -17,6 +35,8 @@ const LoginScreen = ({ navigation }) => {
                         label="Email"
                         value={email}
                         mode="outlined"
+                        keyboardType='email-address'
+                        autoCapitalize='none'
                         onChangeText={text => setEmail(text)}
                     />
                     <TextInput
@@ -26,7 +46,10 @@ const LoginScreen = ({ navigation }) => {
                         secureTextEntry={true}
                         onChangeText={text => setPassword(text)}
                     />
-                    <Button mode="contained" textColor='white' onPress={() => console.log('Pressed')}>
+                    <Button mode="contained" textColor='white' onPress={() => {
+                        Keyboard.dismiss();
+                        userLogin();
+                    }}>
                         Login
                     </Button>
                     <TouchableOpacity onPress={() => navigation.navigate("signup")}>
